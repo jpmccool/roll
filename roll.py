@@ -1,6 +1,7 @@
 class DiceRoll :
     
     # Split a dice roll string into easily digested tokens
+    # TODO - Ensure that rollstr is sanitized
     def tokenize (rollstr) :
         components = re.split("(?=[\+-])", rollstr)
         tokens = [ ]
@@ -24,9 +25,35 @@ class DiceRoll :
             else :
                 # error
                 pass
-            #print("token = ", token, sep = '')
             tokens.append(token)
         return tokens
+        
+    # Sort a list of tokens by descending k, then by descending m, and condense into as few rolls as possible
+    def sort_tokens (tokens) :
+        # Sort tokens by descending k, then by descending m, and condense redundant terms
+        tokens.sort(key=itemgetter(1, 0), reverse=True)
+        rolls = [ ]
+        last_sign = 0
+        curr_n = 0
+        last_k = 0
+        mod = 0
+        for token in tokens :
+            n = token[0]
+            k = token[1]
+            if n == 0 :
+                continue
+            sign = 1 if n > 0 else -1
+            if k == last_k and (sign == last_sign or k == 1) : # continue accumulating for this value of k, unless there is a change in sign or k is 1
+                curr_n += n
+            else :# k != last_k or (sign != last_sign and k > 1)
+                if curr_n != 0 :
+                    rolls.append((curr_n, last_k))
+                curr_n = n
+                last_k = k
+            last_sign = sign
+        if curr_n != 0 :
+            rolls.append((curr_n, last_k))
+        return rolls
     
     
     def __init__ (self, rollstr) :

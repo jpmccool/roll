@@ -55,6 +55,18 @@ class DiceRoll :
             rolls.append((curr_n, last_k))
         return rolls
     
+    # Update a dice roll's propability distribution (p) by adding another (k)-side die 
+    def convolve (p, k) :
+        plen = len(p)
+        dist = [ ]
+        dist.append(p[0])
+        for i in range(1, plen + k - 1) :
+            sum = dist[i - 1]
+            if (i < plen) : sum += p[i]
+            if (i >= k)   : sum -= p[i-k]
+            dist.append(sum)
+        return dist
+    
     
     def __init__ (self, rollstr) :
         print("Creating DiceRoll object for: " + rollstr)

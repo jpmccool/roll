@@ -132,6 +132,10 @@ class DiceRoll :
         self.calculate_stats()
         self.canonicalize();
         return
+    
+    def __string__ () :
+        return canonical_rollstr
+    
 
 
 roll = DiceRoll("-d4-d6+5d6-0d20+2-3d6-8+d4")

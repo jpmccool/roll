@@ -1,5 +1,6 @@
 import re
 from operator import itemgetter
+import random
 
 class DiceRoll :
     
@@ -103,6 +104,27 @@ class DiceRoll :
             else :
                 self.canonical_rollstr += str(n) + "d" + str(k)
     
+    # Rolls all the dice and returns the total (including modifiers)
+    # Also stores the dice rolls and total for retrieval
+    def roll (self) :
+        self.dice_rolls = [ ]
+        self.roll_total = 0
+        for roll in self.rolls :
+            n = roll[0]
+            k = roll[1]
+            if k == 1 :
+                self.roll_total += n
+                self.dice_rolls.append((n,))
+            else :
+                ndk = [ ]
+                for die in range(abs(n)) :
+                    num = random.randrange(1, k + 1)
+                    if (n < 0) :
+                        num *= -1
+                    self.roll_total += num
+                    ndk.append(num)
+                self.dice_rolls.append(tuple(ndk))
+        return self.roll_total
     
     # Display
     original_rollstr = ""
@@ -117,6 +139,11 @@ class DiceRoll :
     total = 1
     probs = [ 1 ]
     expected = 0
+    
+    # Most recent dice roll results
+    dice_rolls = [ ]
+    roll_total = 0
+    
     
     def __init__ (self, rollstr) :
         print("Creating DiceRoll object for: " + rollstr)
@@ -135,4 +162,6 @@ roll = DiceRoll("-d4-d6+5d6-0d20+2-3d6-8+d4")
 print(roll)
 
 roll = DiceRoll("5d6-4d6+1d4-1d4-6")
-print(roll)
+result = roll.roll()
+print("Roll:", roll)
+print("Total:", result)

@@ -138,6 +138,17 @@ class DiceRoll :
                 p = 0.00
         return p / self.total
     
+    
+    # TODO: Add method to return the probability distribution as a list of (value, probability) tuples
+    #       - with option to return tuples as (value, probability-as-integer) ?
+    
+    # TODO: Add method to retrieve statistics in a well documented format
+    #       - expected value (mean), max probability, value range/size, probability distribution (off by default), variance/stddev
+    
+    # TODO: Add ability to modify this roll with additional rolls and mods
+    # def modify (roll, rollstr) :
+    
+    
     # Display
     original_rollstr = ""
     canonical_rollstr = ""

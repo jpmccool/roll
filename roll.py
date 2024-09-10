@@ -1,3 +1,6 @@
+import re
+from operator import itemgetter
+
 class DiceRoll :
     
     # Split a dice roll string into easily digested tokens
@@ -67,7 +70,57 @@ class DiceRoll :
             dist.append(sum)
         return dist
     
+    # Calculate statistics for the current dice roll, i.e. probability distribution
+    def calculate_stats (self) :
+        for roll in self.rolls :
+            n = roll[0]
+            k = roll[1]
+            if n > 0 :
+                self.low_val += n
+            elif n < 0 :
+                self.low_val += n * k
+            else :
+                continue # since this contributes no dice - this should be redundant
+            self.size += abs(n) * (k - 1)
+            self.total *= k**abs(n)
+            if k > 1 :
+                for x in range(abs(n)) :
+                    self.probs = DiceRoll.convolve(self.probs, k)
+        # Expectation value
+        # TODO: There is an easier way to do this (by adding individual dice expectations)
+        val = self.low_val
+        for p in self.probs :
+            self.expected += val * p;
+            val += 1
+        self.expected /= self.total
+    
+    
+    # Display
+    original_rollstr = ""
+    #rollstr = ""
+    
+    # Rolls to make
+    rolls = [ ]
+    
+    # Stats
+    low_val = 0
+    size = 1
+    total = 1
+    probs = [ 1 ]
+    expected = 0
+    
+    
+    
+    
+    
     
     def __init__ (self, rollstr) :
         print("Creating DiceRoll object for: " + rollstr)
+        self.original_rollstr = rollstr
+        self.rolls = DiceRoll.sort_tokens(DiceRoll.tokenize(rollstr))
+        self.calculate_stats()
         return
+
+
+roll = DiceRoll("-d4-d6+5d6-0d20+2-3d6-8+d4")
+roll = DiceRoll("5d6-4d6+1d4-1d4-6")

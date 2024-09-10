@@ -10,7 +10,7 @@ class DiceRoll :
         tokens = [ ]
         for token in components :
             #Assumes: [\+-]? (0|[1-9][0-9]*)? [dD] ([1-9][0-9]*)
-            if (token == '') :
+            if token == '' :
                 continue
             if token.startswith('+') :
                 nk = re.split("[dD]", token[1:])
@@ -25,9 +25,6 @@ class DiceRoll :
                 token = (sign * int(nk[0]), 1)
             elif len(nk) == 2 :
                 token = (sign * int(nk[0]) if len(nk[0]) > 0 else sign, int(nk[1]))
-            else :
-                # error
-                pass
             tokens.append(token)
         return tokens
         
@@ -46,7 +43,7 @@ class DiceRoll :
             if n == 0 :
                 continue
             sign = 1 if n > 0 else -1
-            if k == last_k and (sign == last_sign or k == 1) : # continue accumulating for this value of k, unless there is a change in sign or k is 1
+            if (k == last_k) and (sign == last_sign or k == 1) : # continue accumulating for this value of k, unless there is a change in sign or k is 1
                 curr_n += n
             else :# k != last_k or (sign != last_sign and k > 1)
                 if curr_n != 0 :
@@ -94,6 +91,7 @@ class DiceRoll :
             val += 1
         self.expected /= self.total
     
+    # Find a canonical form for the dice roll string
     def canonicalize (self) :
         for roll in self.rolls :
             n = roll[0]
@@ -120,11 +118,6 @@ class DiceRoll :
     probs = [ 1 ]
     expected = 0
     
-    
-    
-    
-    
-    
     def __init__ (self, rollstr) :
         print("Creating DiceRoll object for: " + rollstr)
         self.original_rollstr = rollstr
@@ -133,10 +126,13 @@ class DiceRoll :
         self.canonicalize();
         return
     
-    def __string__ () :
-        return canonical_rollstr
+    def __str__ (self) :
+        return self.canonical_rollstr
     
 
 
 roll = DiceRoll("-d4-d6+5d6-0d20+2-3d6-8+d4")
+print(roll)
+
 roll = DiceRoll("5d6-4d6+1d4-1d4-6")
+print(roll)

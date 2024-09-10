@@ -94,10 +94,21 @@ class DiceRoll :
             val += 1
         self.expected /= self.total
     
+    def canonicalize (self) :
+        for roll in self.rolls :
+            n = roll[0]
+            k = roll[1]
+            if k == 1:
+                self.canonical_rollstr += ("+" if n > 0 else "") + str(n);
+            elif len(self.canonical_rollstr) > 0 :
+                self.canonical_rollstr += ("+" if n > 0 else "") + str(n) + "d" + str(k);
+            else :
+                self.canonical_rollstr += str(n) + "d" + str(k)
+    
     
     # Display
     original_rollstr = ""
-    #rollstr = ""
+    canonical_rollstr = ""
     
     # Rolls to make
     rolls = [ ]
@@ -119,6 +130,7 @@ class DiceRoll :
         self.original_rollstr = rollstr
         self.rolls = DiceRoll.sort_tokens(DiceRoll.tokenize(rollstr))
         self.calculate_stats()
+        self.canonicalize();
         return
 
 

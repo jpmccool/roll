@@ -126,6 +126,18 @@ class DiceRoll :
                 self.dice_rolls.append(tuple(ndk))
         return self.roll_total
     
+    # Find the probability of having rolled the most recent total
+    # Returns the probability as a fraction, not a percentage
+    def prob_of (self, total = None) :
+        if total is None :
+            p = self.probs[self.roll_total - self.low_val]
+        else :
+            if (total >= self.low_val) and (total < self.low_val + self.size) :
+                p = self.probs[total - self.low_val]
+            else :
+                p = 0.00
+        return p / self.total
+    
     # Display
     original_rollstr = ""
     canonical_rollstr = ""
@@ -165,3 +177,4 @@ roll = DiceRoll("5d6-4d6+1d4-1d4-6")
 result = roll.roll()
 print("Roll:", roll)
 print("Total:", result)
+print(f"Probability: {roll.prob_of() :.2%}")
